@@ -1,5 +1,4 @@
-"""DeepFaune - Wildlife Detection and Classification System"""
+"""Camera Trap Assistant - Wildlife detection and classification."""
 
 __version__ = "1.0.0"
-__author__ = "DeepFaune Team"
-__email__ = "contact@deepfaune.cnrs.fr"
+__author__ = "Noe Bernigaud"

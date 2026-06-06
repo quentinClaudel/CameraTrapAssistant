@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use Camera Trap Assistant, please cite this software and acknowledge DeepFaune as described in the documentation."
+title: "Camera Trap Assistant"
+type: software
+authors:
+  - family-names: "Bernigaud"
+    given-names: "Noe"
+repository-code: "https://github.com/noebernigaud/CameraTrapAssistant"
+url: "https://github.com/noebernigaud/CameraTrapAssistant"
+license: "CECILL-2.1"
+version: "1.0.0"
+keywords:
+  - camera traps
+  - wildlife
+  - computer vision
+  - DeepFaune
+references:
+  - type: software
+    title: "DeepFaune"
+    authors:
+      - family-names: "Chamaille-Jammes"
+        given-names: "Simon"
+      - family-names: "Miele"
+        given-names: "Vincent"
+    url: "https://deepfaune.pages.math.cnrs.fr/software/"

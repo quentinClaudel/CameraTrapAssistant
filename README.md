@@ -2,6 +2,11 @@
 
 A comprehensive wildlife detection and classification system for camera trap images.
 
+Camera Trap Assistant is an independent, non-commercial open-source project
+built with models and selected source code from
+[DeepFaune](https://deepfaune.pages.math.cnrs.fr/software/), a CNRS project.
+It is not affiliated with or endorsed by CNRS or the DeepFaune authors.
+
 ## Quick Start
 
 **Windows Users**: 
@@ -86,4 +91,19 @@ Create GitHub release with tag `v1.0.1` - the installer will detect it automatic
 
 ## License
 
-This software is governed by the CeCILL license under French law.
+Project-original source code is copyright (c) 2025-2026 Noe Bernigaud and is
+distributed under the [CeCILL v2.1 license](LICENSE). Adapted DeepFaune source
+files retain their CNRS copyright and CeCILL notices.
+
+The bundled DeepFaune model weights are licensed separately under
+[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Other models,
+dependencies, tools, services, and brand assets have their own terms. See
+[Third-Party Notices](THIRD_PARTY_NOTICES.md) before redistributing the
+application.
+
+## Citation and acknowledgement
+
+Citation metadata for this project is provided in [`CITATION.cff`](CITATION.cff).
+Research and publications using the bundled AI models should also acknowledge
+and cite DeepFaune according to its
+[official documentation](https://deepfaune.pages.math.cnrs.fr/software/).

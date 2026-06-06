@@ -57,7 +57,7 @@ def show_support_nudge(parent: tk.Tk) -> None:
     Show a small, friendly dialog suggesting support every few runs.
     """
     top = tk.Toplevel(parent)
-    top.title("Support DeepFaune")
+    top.title("Support Camera Trap Assistant")
     top.transient(parent)
     top.grab_set()
     top.resizable(False, False)
