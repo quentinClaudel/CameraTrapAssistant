@@ -73,7 +73,7 @@ def show_support_nudge(parent: tk.Tk) -> None:
     msg = tk.Label(
         top,
         text="Love using Camera Trap Assistant?" \
-        "\nYour support helps keep it free and helps fund new features for wildlife enthusiasts everywhere!",
+        "\nYour support helps fund new features for wildlife enthusiasts everywhere!",
         wraplength=380,
         justify="center",
         font=("Arial", 11)
