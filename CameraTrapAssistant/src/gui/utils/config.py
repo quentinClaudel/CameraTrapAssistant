@@ -30,7 +30,7 @@ def load_checkbox_state():
     """
     config = configparser.ConfigParser()
     config_file = get_config_file_path()
-    if os.path.exists(config_file):
+    if Path(config_file).exists():
         config.read(config_file)
         state = OptionsConfig(
             generate_data = config.getboolean('options', 'generate_data', fallback=True),
@@ -67,7 +67,7 @@ def save_checkbox_state(newOptionsConfig: OptionsConfig):
     """
     config = configparser.ConfigParser()
     config_file = get_config_file_path()
-    if os.path.exists(config_file):
+    if Path(config_file).exists():
         config.read(config_file)
     if 'options' not in config:
         config['options'] = {}
@@ -93,7 +93,7 @@ def load_map_state():
     """
     config = configparser.ConfigParser()
     config_file = get_config_file_path()
-    if os.path.exists(config_file):
+    if Path(config_file).exists():
         config.read(config_file)
         lat = config.getfloat('map', 'lat', fallback=48.85884)
         lon = config.getfloat('map', 'lon', fallback=2.29435)
@@ -109,7 +109,7 @@ def save_map_state(lat, lon, zoom):
     """
     config = configparser.ConfigParser()
     config_file = get_config_file_path()
-    if os.path.exists(config_file):
+    if Path(config_file).exists():
         config.read(config_file)
     if 'map' not in config:
         config['map'] = {}
@@ -127,7 +127,7 @@ def get_run_count() -> int:
     """
     config = configparser.ConfigParser()
     config_file = get_config_file_path()
-    if os.path.exists(config_file):
+    if Path(config_file).exists():
         config.read(config_file)
         return config.getint('meta', 'run_count', fallback=0)
     return 0
@@ -139,7 +139,7 @@ def increment_run_count() -> int:
     """
     config = configparser.ConfigParser()
     config_file = get_config_file_path()
-    if os.path.exists(config_file):
+    if Path(config_file).exists():
         config.read(config_file)
     if 'meta' not in config:
         config['meta'] = {}

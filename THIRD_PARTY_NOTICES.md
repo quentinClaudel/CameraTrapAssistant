@@ -96,6 +96,9 @@ credited as required by:
 - https://operations.osmfoundation.org/policies/tiles/
 - https://operations.osmfoundation.org/policies/nominatim/
 
+Reverse-geocoding requests use an application-specific identifier and are
+limited to one request per second.
+
 Weather data is requested from Open-Meteo. Its free/open-access data requires
 attribution to Open-Meteo and the relevant source providers under CC BY 4.0:
 https://open-meteo.com/en/terms

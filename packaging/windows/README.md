@@ -32,6 +32,14 @@ the model manifest, invokes PyInstaller, smoke-tests the packaged executable,
 and invokes Inno Setup. The packaged directory includes `DEPENDENCIES.txt`
 with the exact resolved Python packages.
 
+For faster development feedback, run the tests without packaging:
+
+```powershell
+.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+```
+
+See [`../../tests/README.md`](../../tests/README.md) for focused test commands.
+
 Generated release files:
 
 ```text

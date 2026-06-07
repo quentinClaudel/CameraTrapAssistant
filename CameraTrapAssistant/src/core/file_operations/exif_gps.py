@@ -2,27 +2,14 @@ import os
 import sys
 import logging
 from pathlib import Path
-from geopy.geocoders import Nominatim
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from utils.exiftool_interface import run_exiftool
-
-geolocator = Nominatim(user_agent="my_app")
+from utils.geocoding import reverse_geocode
 
 
 def get_place_name(lat, lon):
-	if lat is None or lon is None:
-		return None
-	import unicodedata
-	location = geolocator.reverse((lat, lon), language="en")
-	if location:
-		# Remove accents from all address fields
-		logging.info(f"Reverse geocoded location: {location}")
-		address_dict = location.raw.get('address', {})
-		import unicodedata
-		address_no_accents = {k: unicodedata.normalize('NFKD', v).encode('ASCII', 'ignore').decode('ASCII') if isinstance(v, str) else v for k, v in address_dict.items()}
-		return address_no_accents
-	return None
+	return reverse_geocode(lat, lon)
 
 def getCity(address):
 	if address:
@@ -120,7 +107,7 @@ def add_and_extract_gps(filenames, lat, lon, skip_gps_exif_overwrite=False):
 def extract_existing_gps(filenames, get_gps_from_each_file=False):
 	"""
 	For each file in filenames, extract GPS coordinates and address info.
-	Uses a cache to avoid duplicate reverse geocoding requests for the same coordinates.
+	Avoids duplicate reverse-geocoding requests within the current batch.
 	"""
 	logging.info("Getting GPS data from videos...")
 	gps_coordinates = []

@@ -75,6 +75,28 @@ launch the application. Model sizes and SHA-256 hashes are validated before
 the AI libraries load. See [`dev/README.md`](dev/README.md) for helper
 responsibilities.
 
+## Run the Tests
+
+The test suite uses Python's built-in `unittest` framework; no separate test
+runner such as pytest is required. On Windows, first run `dev\setup.bat` to
+create `.venv`. Then execute this from the repository root:
+
+```powershell
+.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+```
+
+To run one test file:
+
+```powershell
+.\.venv\Scripts\python.exe -m unittest discover -s tests -p "test_geocoding.py" -v
+```
+
+On macOS or Linux, use `./.venv/bin/python` instead of
+`.\.venv\Scripts\python.exe` after creating a virtual environment and
+installing `CameraTrapAssistant/requirements.txt`. The Windows release build
+also runs the complete suite automatically before packaging. More details are in
+[`tests/README.md`](tests/README.md).
+
 ## Build a Windows Release
 
 Release builds use PyInstaller in one-directory mode and Inno Setup 6:

@@ -31,11 +31,13 @@ def main():
 
         if "--smoke-test" in sys.argv:
             from PIL import Image
+            from gui.utils.config import load_checkbox_state
             from models.classifTools import Classifier
             from models.detectTools import Detector, DFYOLO_NAME, MDSYOLO_NAME
             from utils.exiftool_interface import run_exiftool
             from utils.resource_manager import get_icon_path, get_third_party_path
 
+            load_checkbox_state()
             for icon_name in (
                 "folder.png",
                 "run.png",

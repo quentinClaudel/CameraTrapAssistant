@@ -28,5 +28,23 @@ dev\setup.bat
 dev\run.bat
 ```
 
+## Tests
+
+Run `dev\setup.bat` first if `.venv` does not exist. Then run the complete test
+suite from the repository root:
+
+```powershell
+.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+```
+
+Run a single test file by filename pattern:
+
+```powershell
+.\.venv\Scripts\python.exe -m unittest discover -s tests -p "test_exiftool_interface.py" -v
+```
+
+Tests use the standard-library `unittest` runner. Keep tests under `tests/`
+with filenames beginning with `test_` so discovery includes them.
+
 Non-technical users should install an official release instead of using these
 developer helpers.
