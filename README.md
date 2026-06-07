@@ -1,152 +1,139 @@
 # Camera Trap Assistant
 
-Camera Trap Assistant is a non-commercial, open-source desktop application for
-detecting and classifying wildlife in camera-trap images and videos.
+Camera Trap Assistant is a free, non-commercial, open-source desktop
+application for detecting and classifying wildlife in camera-trap images and
+videos. It can organize results, create CSV and PDF reports, and work with GPS
+metadata.
 
 It uses AI models and selected source code from
 [DeepFaune](https://deepfaune.pages.math.cnrs.fr/software/), a CNRS project.
-Camera Trap Assistant is independent and is not affiliated with or endorsed by
-CNRS or the DeepFaune authors.
+Camera Trap Assistant is an independent project and is not affiliated with or
+endorsed by CNRS or the DeepFaune authors.
 
-## Install on Windows
+## Choose Your Path
 
-Download `CameraTrapAssistant-<version>-Windows-x64-Setup.exe` and
-`SHA256SUMS.txt` from the
-[GitHub Releases page](https://github.com/noebernigaud/CameraTrapAssistant/releases).
-Verify the checksum, run the installer, then launch the application from the
-Start menu.
+### Install and Use
 
-The installer includes an isolated runtime, verified AI models, and ExifTool.
-Users do not need Python, Git, or Git LFS. Automatic application replacement
-is intentionally disabled for v1.
+You want to analyze camera-trap media without installing Python or developer
+tools.
 
-## Repository Architecture
+- [Install the Windows application](#install-on-windows)
+- [Run your first analysis](#run-your-first-analysis)
+- [Understand files and results](#files-and-results)
+- [Get help](#get-help)
 
-```text
-CameraTrapAssistant/
-  src/
-    core/                 Feature and domain logic
-    gui/                  Windows, widgets, and GUI helpers
-    models/               DeepFaune integration, manifest, and model weights
-    utils/                Shared infrastructure and external-service adapters
-    config/               Runtime configuration code
-    main.py               Application entry point
-  resources/
-    icons/                User-interface images
-    config/               Packaged default configuration
-    third_party/          Bundled runtime files, grouped by platform
-  requirements.txt        Runtime Python dependencies
-  version.json            Release metadata
-dev/                      Source-checkout helpers for contributors
-packaging/windows/        Windows build and installer definitions
-tests/                    Automated tests
-run-source.bat            Convenient Windows source launcher
-LICENSE                   Project source license
-THIRD_PARTY_NOTICES.md    External code, models, services, and assets
-CITATION.cff              Citation metadata
-```
+### Develop and Contribute
 
-The boundaries are intentional: application behavior belongs under
-`CameraTrapAssistant`, contributor conveniences belong under `dev`, and
-generated release work belongs under `packaging`.
+You want to run the source code, fix a bug, add a feature, improve another
+platform, or prepare a release.
 
-Platform-specific distribution work should follow the same shape:
-`packaging/<platform>` for build definitions and
-`resources/third_party/<platform>` for bundled native components. This gives a
-macOS packager a clear place to add its installer and native dependencies.
+- [Set up a development environment](dev/README.md#development-setup)
+- [Run the application from source](dev/README.md#run-from-source)
+- [Run and write tests](tests/README.md)
+- [Understand the repository](dev/README.md#repository-architecture)
+- [Prepare a pull request](dev/README.md#prepare-a-pull-request)
+- [Build the Windows installer](packaging/windows/README.md)
 
-## Run from Source
+## Install and Use
 
-Source development requires Python 3.10 or newer and Git LFS. No installer or
-packaging step is needed. Create a repository-local virtual environment,
-install the dependencies, download the model files, and run `main.py`
-directly.
+### Install on Windows
 
-First clone the repository and download its Git LFS objects:
+The supported public package is currently the 64-bit Windows installer.
+macOS and Linux do not yet have supported installers, although the application
+can be run from source for development.
 
-```bash
-git lfs install
-git clone https://github.com/noebernigaud/CameraTrapAssistant.git
-cd CameraTrapAssistant
-git lfs pull
-```
+1. Open the
+   [GitHub Releases page](https://github.com/noebernigaud/CameraTrapAssistant/releases).
+2. Under the release's **Assets**, download
+   `CameraTrapAssistant-<version>-Windows-x64-Setup.exe`.
+3. Run the downloaded installer.
+4. Open **Camera Trap Assistant** from the Windows Start menu.
 
-On Windows PowerShell:
+The installer includes Python, the AI models, and ExifTool. You do not need to
+install Python, Git, or Git LFS.
+
+Each release also provides `SHA256SUMS.txt` for users who want to verify the
+download:
 
 ```powershell
-py -3 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install --upgrade pip
-.\.venv\Scripts\python.exe -m pip install -r CameraTrapAssistant\requirements.txt
-.\.venv\Scripts\python.exe CameraTrapAssistant\src\main.py
+Get-FileHash .\CameraTrapAssistant-<version>-Windows-x64-Setup.exe -Algorithm SHA256
 ```
 
-On macOS or Linux:
+The displayed hash must match the installer entry in `SHA256SUMS.txt`.
 
-```bash
-python3 -m venv .venv
-./.venv/bin/python -m pip install --upgrade pip
-./.venv/bin/python -m pip install -r CameraTrapAssistant/requirements.txt
-./.venv/bin/python CameraTrapAssistant/src/main.py
-```
+### Run Your First Analysis
 
-After the first setup, only the final command is needed to launch the app.
-Activation of `.venv` is optional because these commands invoke its Python
-executable directly. Models are validated automatically at startup.
+> **Be aware of permanent files modifications.** Some options rename original files,
+> move them into `empty` or `undefined` subfolders, or overwrite GPS metadata.
+> Review the checked options before every run.
 
-The bundled ExifTool executable is currently Windows-specific. The application
-can be launched for development on other platforms, but GPS metadata reading
-and writing requires a platform-specific ExifTool integration.
+1. Launch Camera Trap Assistant.
+2. Click **Choose Folder** and select the folder containing your camera-trap
+   images or videos. Subfolders are included.
+3. Review the options. Hover over an option to see a detailed explanation.
+4. Click **Run**.
+5. Follow progress in the **Logs** area. Processing time depends on the number
+   of files and the computer's hardware.
 
-Windows contributors may alternatively use `dev\setup.bat`, `dev\run.bat`, or
-the root `run-source.bat`. See the [developer guide](dev/README.md) for both
-the platform-neutral workflow and optional helpers.
+AI classifications can be wrong. Review important results rather than treating
+predictions as verified observations.
 
-## Run the Tests
+### Files and Results
 
-The test suite uses Python's built-in `unittest` framework; no separate test
-runner such as pytest is required. After creating `.venv` and installing the
-dependencies as described above, execute this from the repository root:
+The application recognizes common camera-trap formats:
 
-```powershell
-.\.venv\Scripts\python.exe -m unittest discover -s tests -v
-```
+- Videos: AVI, MP4, MPEG, MOV, and M4V
+- Images: PNG, JPG, JPEG, TIFF, BMP, and GIF
 
-To run one test file:
+Depending on the selected options, the application can create or change:
 
-```powershell
-.\.venv\Scripts\python.exe -m unittest discover -s tests -p "test_geocoding.py" -v
-```
+| Option | Result |
+| --- | --- |
+| **CSV file** | Creates `data/deepFaune_results.csv`. |
+| **Statistics file** | Creates `data/stats.pdf`. |
+| **Empty results to subfolder** | Moves matching original files to `empty/`. |
+| **Undefined results to subfolder** | Moves low-confidence original files to `undefined/`. |
+| **Rename with date and info** | Renames original files. |
+| **Add GPS location** | Writes the selected coordinates into original files. |
+| **Use added GPS data without updating files** | Uses coordinates in reports without changing media metadata. |
+| **Combine data results with existing CSV** | Creates `data/deepFaune_combined_results.csv`. |
 
-On macOS or Linux, use `./.venv/bin/python` instead of
-`.\.venv\Scripts\python.exe` after creating a virtual environment and
-installing `CameraTrapAssistant/requirements.txt`. The Windows release build
-also runs the complete suite automatically before packaging. More details are in
-[`tests/README.md`](tests/README.md).
+The selected folder and its subfolders are scanned recursively. Generated
+`data`, `empty`, and `undefined` folders are placed inside the selected folder.
 
-## Build a Windows Release
+Classification runs locally. Features using maps, address lookup, or weather
+data contact the third-party online services listed in
+[Third-Party Notices](THIRD_PARTY_NOTICES.md).
 
-Release builds use PyInstaller in one-directory mode and Inno Setup 6:
+### Get Help
 
-```powershell
-.\packaging\windows\build.ps1
-```
+If the application reports an error:
 
-The build runs tests, validates models, packages and smoke-tests the
-application, creates the installer, and writes its checksum under
-`packaging/windows/artifacts`. See the
-[Windows packaging guide](packaging/windows/README.md) for prerequisites and
-the release checklist.
+1. Read the last messages in the **Logs** area.
+2. Retry with a small copied folder and options that do not modify files.
+3. Check the
+   [open issues](https://github.com/noebernigaud/CameraTrapAssistant/issues).
+4. If the problem is new, create an issue with the application version,
+   Windows version, steps to reproduce, and relevant log messages.
 
-## Versioning
+## Develop and Contribute
 
-Before a release, set the same version in:
+Contributions to code, documentation, testing, user experience, and packaging
+are welcome. Start with the [developer and contributor guide](dev/README.md).
+It contains the cross-platform Python setup, source launch commands, project
+architecture, coding expectations, and pull-request checklist.
 
-- `CameraTrapAssistant/version.json`
-- `CameraTrapAssistant/src/__init__.py`
-- `packaging/windows/CameraTrapAssistant.iss`
+Useful references:
 
-Then run the complete build, test the installer on a clean Windows machine,
-and publish the installer with `SHA256SUMS.txt` in a matching GitHub Release.
+- [Developer and contributor guide](dev/README.md)
+- [Test guide](tests/README.md)
+- [Windows packaging guide](packaging/windows/README.md)
+- [Third-party notices](THIRD_PARTY_NOTICES.md)
+- [Issue tracker](https://github.com/noebernigaud/CameraTrapAssistant/issues)
+
+Platform-specific distribution work belongs under `packaging/<platform>`, and
+bundled native dependencies belong under
+`CameraTrapAssistant/resources/third_party/<platform>`.
 
 ## License and Attribution
 
@@ -155,11 +142,11 @@ distributed under the [CeCILL v2.1 license](LICENSE). Adapted DeepFaune source
 files retain their CNRS copyright and CeCILL notices.
 
 The bundled DeepFaune model weights are licensed separately under
-[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Other models,
-dependencies, bundled software, services, and brand assets have their own
-terms. Review [Third-Party Notices](THIRD_PARTY_NOTICES.md) before
-redistributing the application.
+[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Dependencies,
+bundled software, services, and brand assets have their own terms. Review
+[Third-Party Notices](THIRD_PARTY_NOTICES.md) before redistributing the
+application.
 
-Citation metadata is provided in [`CITATION.cff`](CITATION.cff). Research and
+Citation metadata is provided in [CITATION.cff](CITATION.cff). Research and
 publications using the AI models should also acknowledge and cite DeepFaune
 according to its official documentation.

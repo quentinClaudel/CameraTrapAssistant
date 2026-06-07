@@ -4,6 +4,10 @@ This directory owns the public Windows distribution pipeline. It builds an
 isolated application and installer; GitHub's generated source ZIP is not an
 installable release.
 
+This guide is for release maintainers. For everyday development, use the
+[developer and contributor guide](../../dev/README.md). For installation as an
+end user, see [Install and Use](../../README.md#install-and-use).
+
 ## Files
 
 - `build.ps1` orchestrates validation, packaging, smoke testing, and checksums.
