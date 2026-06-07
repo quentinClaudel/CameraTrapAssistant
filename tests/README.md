@@ -5,23 +5,17 @@ this directory and must be named `test_*.py` for automatic discovery.
 
 ## Run All Tests
 
-On Windows, first prepare the source environment:
-
-```bat
-dev\setup.bat
-```
-
-Then run this command from the repository root:
+Create `.venv` and install the project dependencies using the
+[developer workflow](../dev/README.md). Then run this command from the
+repository root on Windows:
 
 ```powershell
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
 ```
 
-On macOS or Linux, create and populate `.venv` first:
+On macOS or Linux:
 
 ```bash
-python3 -m venv .venv
-./.venv/bin/python -m pip install -r CameraTrapAssistant/requirements.txt
 ./.venv/bin/python -m unittest discover -s tests -v
 ```
 

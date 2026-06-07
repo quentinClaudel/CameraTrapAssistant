@@ -46,9 +46,7 @@ def select_folder():
 def run():
     # Increment run count and disable button during processing
     run_btn.config(state=tk.DISABLED)
-    log_text.config(state='normal')
-    log_text.delete(1.0, tk.END)
-    log_text.config(state='disabled')
+    log_handler.clear()
     options_config = OptionsConfig(
         generate_data = data_var.get(),
         generate_stats = stats_var.get(),
@@ -109,7 +107,7 @@ def main():
     Main entry point for the DeepFaune GUI.
     Sets up the window, widgets, and logging.
     """
-    global root, folder, label, log_text
+    global root, folder, label, log_text, log_handler
     global data_var, stats_var, move_empty_var, move_undefined_var, rename_var, get_gps_each_var, use_gps_only_for_data_var, threshold_var, combine_with_data_var, time_offset_var
     global gps_var, coord_var
     root = tk.Tk()
@@ -334,8 +332,60 @@ def main():
     logs_separator.pack(fill="x", padx=12, pady=(0, 8))
 
     # Log text area
-    log_text = tk.Text(root, height=10, width=60, state='disabled')
-    log_text.pack(padx=10, pady=(0, 10), fill='both', expand=True)
+    log_frame = tk.Frame(root)
+    log_frame.pack(padx=10, pady=(0, 10), fill='both', expand=True)
+    log_frame.rowconfigure(0, weight=1)
+    log_frame.columnconfigure(0, weight=1)
+
+    log_text = tk.Text(
+        log_frame,
+        height=10,
+        width=60,
+        state='disabled',
+        wrap='word',
+    )
+    log_text.grid(row=0, column=0, sticky='nsew')
+
+    log_scrollbar = ttk.Scrollbar(
+        log_frame,
+        orient=tk.VERTICAL,
+        command=log_text.yview,
+    )
+    log_scrollbar.grid(row=0, column=1, sticky='ns')
+
+    new_logs_button = tk.Button(
+        log_frame,
+        text="New logs",
+        font=("Arial", 9, "bold"),
+        padx=8,
+        pady=2,
+        cursor="hand2",
+    )
+
+    def set_new_logs_visible(visible):
+        if visible:
+            new_logs_button.place(
+                relx=1.0,
+                rely=1.0,
+                x=-18,
+                y=-8,
+                anchor='se',
+            )
+            new_logs_button.lift()
+        else:
+            new_logs_button.place_forget()
+
+    log_handler = TkinterLogHandler(
+        log_text,
+        on_unread_change=set_new_logs_visible,
+    )
+    new_logs_button.config(command=log_handler.scroll_to_bottom)
+
+    def on_log_scroll(first_visible, last_visible):
+        log_scrollbar.set(first_visible, last_visible)
+        log_handler.on_view_changed(first_visible, last_visible)
+
+    log_text.config(yscrollcommand=on_log_scroll)
 
     # Footer with support link (looks like a hyperlink)
     footer_frame = tk.Frame(root)
@@ -389,8 +439,7 @@ def main():
     github_link.pack(side=tk.RIGHT, padx=10, pady=(0, 10))
 
     # Attach the logging handler
-    handler = TkinterLogHandler(log_text)
-    logging.getLogger().addHandler(handler)
+    logging.getLogger().addHandler(log_handler)
     logging.getLogger().setLevel(logging.INFO)
 
     root.mainloop()

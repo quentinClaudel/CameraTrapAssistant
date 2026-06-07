@@ -57,29 +57,55 @@ macOS packager a clear place to add its installer and native dependencies.
 
 ## Run from Source
 
-Source development requires Windows, Python 3.10 or newer, and Git LFS. The
-setup creates a repository-local `.venv`; it does not modify the user's global
-Python environment.
+Source development requires Python 3.10 or newer and Git LFS. No installer or
+packaging step is needed. Create a repository-local virtual environment,
+install the dependencies, download the model files, and run `main.py`
+directly.
 
-```bat
+First clone the repository and download its Git LFS objects:
+
+```bash
 git lfs install
 git clone https://github.com/noebernigaud/CameraTrapAssistant.git
 cd CameraTrapAssistant
 git lfs pull
-dev\setup.bat
-dev\run.bat
 ```
 
-Alternatively, run `run-source.bat` to set up the environment when needed and
-launch the application. Model sizes and SHA-256 hashes are validated before
-the AI libraries load. See [`dev/README.md`](dev/README.md) for helper
-responsibilities.
+On Windows PowerShell:
+
+```powershell
+py -3 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\python.exe -m pip install -r CameraTrapAssistant\requirements.txt
+.\.venv\Scripts\python.exe CameraTrapAssistant\src\main.py
+```
+
+On macOS or Linux:
+
+```bash
+python3 -m venv .venv
+./.venv/bin/python -m pip install --upgrade pip
+./.venv/bin/python -m pip install -r CameraTrapAssistant/requirements.txt
+./.venv/bin/python CameraTrapAssistant/src/main.py
+```
+
+After the first setup, only the final command is needed to launch the app.
+Activation of `.venv` is optional because these commands invoke its Python
+executable directly. Models are validated automatically at startup.
+
+The bundled ExifTool executable is currently Windows-specific. The application
+can be launched for development on other platforms, but GPS metadata reading
+and writing requires a platform-specific ExifTool integration.
+
+Windows contributors may alternatively use `dev\setup.bat`, `dev\run.bat`, or
+the root `run-source.bat`. See the [developer guide](dev/README.md) for both
+the platform-neutral workflow and optional helpers.
 
 ## Run the Tests
 
 The test suite uses Python's built-in `unittest` framework; no separate test
-runner such as pytest is required. On Windows, first run `dev\setup.bat` to
-create `.venv`. Then execute this from the repository root:
+runner such as pytest is required. After creating `.venv` and installing the
+dependencies as described above, execute this from the repository root:
 
 ```powershell
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v

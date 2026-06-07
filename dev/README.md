@@ -1,37 +1,67 @@
-# Developer Helpers
+# Developer Workflow
 
-This directory contains Windows helpers for contributors running the source
-checkout. These files are not part of the installed application.
+The application can be run directly with Python. Building PyInstaller or the
+Windows installer is not necessary for normal development checks.
 
-## Responsibilities
+## Platform-Neutral Setup
 
-- `setup.bat` creates the repository-local `.venv`, installs Python
-  dependencies, and validates every bundled AI model.
-- `run.bat` launches `CameraTrapAssistant/src/main.py` with `pythonw.exe`.
-- `check-release.bat` compares the local version with GitHub Releases. It may
-  open the Releases page, but it never replaces application files.
+Requirements:
 
-The root `run-source.bat` is the convenient entry point: it calls `setup.bat`
-when `.venv` is missing, then calls `run.bat`.
-
-## Requirements
-
-- Windows 10 or newer
 - Python 3.10 or newer
-- Git LFS with all model files downloaded
+- Git LFS
+- Platform-compatible builds of the dependencies in
+  `CameraTrapAssistant/requirements.txt`
 
-From the repository root:
+From the repository root, make sure the model files are present:
 
-```bat
+```bash
+git lfs install
 git lfs pull
-dev\setup.bat
-dev\run.bat
 ```
 
-## Tests
+Create `.venv` and install dependencies on Windows PowerShell:
 
-Run `dev\setup.bat` first if `.venv` does not exist. Then run the complete test
-suite from the repository root:
+```powershell
+python3 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\python.exe -m pip install -r CameraTrapAssistant\requirements.txt
+```
+
+Or on macOS and Linux:
+
+```bash
+python3 -m venv .venv
+./.venv/bin/python -m pip install --upgrade pip
+./.venv/bin/python -m pip install -r CameraTrapAssistant/requirements.txt
+```
+
+Using the virtual environment's Python explicitly means shell activation is
+optional.
+
+## Launch the Application
+
+Windows PowerShell:
+
+```powershell
+.\.venv\Scripts\python.exe CameraTrapAssistant\src\main.py
+```
+
+macOS or Linux:
+
+```bash
+./.venv/bin/python CameraTrapAssistant/src/main.py
+```
+
+The app validates the model manifest at startup. If it reports Git LFS pointer
+files, run `git lfs pull` again.
+
+The repository currently bundles the Windows ExifTool executable. The GUI can
+be launched on other platforms for development, but GPS metadata operations
+need a platform-specific ExifTool implementation.
+
+## Run Tests
+
+Run the complete suite:
 
 ```powershell
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
@@ -45,6 +75,16 @@ Run a single test file by filename pattern:
 
 Tests use the standard-library `unittest` runner. Keep tests under `tests/`
 with filenames beginning with `test_` so discovery includes them.
+
+## Optional Windows Helpers
+
+- `setup.bat` creates `.venv`, installs dependencies, and validates the models.
+- `run.bat` launches the source application with `pythonw.exe`.
+- `check-release.bat` checks GitHub Releases without replacing local files.
+- The root `run-source.bat` runs setup when needed and then launches the app.
+
+These wrappers perform the same basic steps as the direct Python commands
+above. They are conveniences, not requirements for development.
 
 Non-technical users should install an official release instead of using these
 developer helpers.
