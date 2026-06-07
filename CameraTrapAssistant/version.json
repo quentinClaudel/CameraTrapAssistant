@@ -1,7 +1,7 @@
 {
     "version": "1.0.0",
     "build_date": "2025-10-18",
-    "min_python_version": "3.8",
+    "min_python_version": "3.10",
     "description": "CameraTrap Assistant - Wildlife camera trap image analysis tool",
     "github_repo": "noebernigaud/CameraTrapAssistant"
 }

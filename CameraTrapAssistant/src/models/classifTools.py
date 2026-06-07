@@ -40,6 +40,7 @@ import torch
 from torch import tensor
 import torch.nn as nn
 from torchvision.transforms import InterpolationMode, transforms
+from utils.model_manager import load_trusted_checkpoint
 
 CROP_SIZE = 182
 BACKBONE = "vit_large_patch14_dinov2.lvd142m"
@@ -123,7 +124,7 @@ class Model(nn.Module):
         if path[-3:] != ".pt":
             path += ".pt"
         try:
-            params = torch.load(path, map_location=self.device)
+            params = load_trusted_checkpoint(path, map_location=self.device)
             args = params['args']
             if self.nbclasses != args['num_classes']:
                 raise Exception("You load a model ({}) that does not have the same number of class"

@@ -48,11 +48,11 @@ by Oliver Betz under CC0.
 
 The package's notices and license bundle are preserved under:
 
-- `CameraTrapAssistant/resources/tools/exiftool/README.txt`
-- `CameraTrapAssistant/resources/tools/exiftool/exiftool_files/readme_windows.txt`
-- `CameraTrapAssistant/resources/tools/exiftool/exiftool_files/windows_exiftool.txt`
-- `CameraTrapAssistant/resources/tools/exiftool/exiftool_files/LICENSE`
-- `CameraTrapAssistant/resources/tools/exiftool/exiftool_files/Licenses_Strawberry_Perl.zip`
+- `CameraTrapAssistant/resources/third_party/windows/exiftool/README.txt`
+- `CameraTrapAssistant/resources/third_party/windows/exiftool/exiftool_files/readme_windows.txt`
+- `CameraTrapAssistant/resources/third_party/windows/exiftool/exiftool_files/windows_exiftool.txt`
+- `CameraTrapAssistant/resources/third_party/windows/exiftool/exiftool_files/LICENSE`
+- `CameraTrapAssistant/resources/third_party/windows/exiftool/exiftool_files/Licenses_Strawberry_Perl.zip`
 
 ExifTool project: https://exiftool.org/
 
@@ -80,6 +80,8 @@ be audited against the versions actually resolved and distributed.
 | requests-cache | BSD 2-Clause |
 | retry-requests | GPL-3.0-or-later |
 | dill | BSD 3-Clause |
+| timm | Apache-2.0 |
+| TkinterMapView | CC0-1.0 |
 
 Ultralytics licensing is especially relevant because the bundled YOLO model
 runtime uses it: https://www.ultralytics.com/license

@@ -27,13 +27,9 @@ def _predict_videos_worker(filenames, threshold, timezone, LANG, log_queue, is_v
     root_logger.addHandler(queue_handler)
 
     # Import predictor inside subprocess
-    from pathlib import Path
-    current_file_dir = Path(__file__).parent.parent.parent  # src/
-    sys.path.insert(0, str(current_file_dir / "models"))
-
     if is_video:
         logging.info("Loading video predictor...")
-        from predictTools import PredictorVideo
+        from models.predictTools import PredictorVideo
         predictor = PredictorVideo(filenames, threshold, LANG)
         logging.info("Starting video predictions...")
         while True:
@@ -44,7 +40,7 @@ def _predict_videos_worker(filenames, threshold, timezone, LANG, log_queue, is_v
         logging.info("Video predictions completed")
     else:
         logging.info("Loading photo predictor...")
-        from predictTools import PredictorImage
+        from models.predictTools import PredictorImage
         predictor = PredictorImage(filenames, threshold, 10, LANG)
         logging.info("Starting photos predictions...")
         while True:

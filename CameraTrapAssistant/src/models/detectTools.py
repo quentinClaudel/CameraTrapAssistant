@@ -40,9 +40,6 @@ import torch
 from torchvision.ops import nms
 from ultralytics import YOLO
 from ultralytics.engine.results import Results
-import yolov5
-from yolov5.utils.general import non_max_suppression, scale_boxes
-from yolov5.utils.augmentations import letterbox
 import sys
 from pathlib import Path
 
@@ -62,11 +59,6 @@ MDSYOLO_NAME = "MDS"
 MDSYOLO_WIDTH = 960 # image width
 MDSYOLO_THRES = 0.5
 MDSYOLO_WEIGHTS = os.path.join(DFPATH, 'weights', 'md_v1000.0.0-sorrel-960-2025.06.06.pt')
-
-MDRYOLO_NAME = "MDR"
-MDRYOLO_WIDTH = 1280
-MDRYOLO_THRES = 0.5
-MDRYOLO_WEIGHTS = os.path.join(DFPATH, 'weights', 'md_v1000.0.0-redwood.pt')
 
 class YOLOEnsemble:
     def __init__(self, weightA, weightB=None, imgszA=None, imgszB=None, thresA=None, thresB=None, backstop=True):
@@ -111,41 +103,6 @@ class YOLOEnsemble:
         resultsA[0].update(np.concatenate((boxes, np.expand_dims(scores, 1), np.expand_dims(classes, 1)), axis=1)[keep])
         return resultsA
 
-class MDRedwood:
-    IMAGE_SIZE = MDRYOLO_WIDTH  # The class must have an IMAGE_WIDTH attribute
-
-    def __init__(self, weight=None, imgsz=None, thres=None, device=None):
-        self.device = device if device else "cuda" if torch.cuda.is_available() else "cpu"
-        self.imgsz = imgsz
-        self.thres = thres
-        checkpoint = torch.load(MDRYOLO_WEIGHTS, map_location=device)
-        self.model = checkpoint["model"].float().fuse().eval().to(self.device)
-        for m in self.model.modules():
-            if isinstance(m, torch.nn.Upsample):
-                m.recompute_scale_factor = None
-        
-    def transform(self, np_img):
-        img = letterbox(np_img, new_shape=self.imgsz, stride=64, auto=False)[0]
-        img = torch.from_numpy(np.ascontiguousarray(img.transpose((2, 0, 1)))).float() / 255.0
-        return img
-    
-    def __call__(self, filename_or_imagecv=None, verbose=False, device=None):
-        try:
-            img = cv2.imread(filename_or_imagecv) if isinstance(filename_or_imagecv, str) else filename_or_imagecv
-            imagecv = self.transform(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
-            preds = self.model(imagecv.unsqueeze(0).to(self.device))[0]
-            preds = torch.cat(non_max_suppression(prediction=preds, conf_thres=self.thres), axis=0)
-            preds[:, :4] = scale_boxes([self.IMAGE_SIZE] * 2, preds[:, :4], img.shape).round()
-            results = [Results(orig_img=img, path="", names={0: "animal", 1: "person", 2: "vehicle"})]
-            results[0].update(preds)
-            return results
-        except FileNotFoundError:
-            raise FileNotFoundError
-        except Exception as err:
-            print(err)
-            raise err
-
-
 ####################################################################################
 ### BEST BOX DETECTION 
 ####################################################################################
@@ -153,8 +110,7 @@ class Detector:
     def __init__(self, name=DFYOLO_NAME, device=None):
         logging.info(f"Using {name} for detection")
         self.device = device
-        if name not in [DFYOLO_NAME, MDSYOLO_NAME, DFYOLO_NAME+"bs"+MDSYOLO_NAME, DFYOLO_NAME+MDSYOLO_NAME,
-                        MDRYOLO_NAME]:
+        if name not in [DFYOLO_NAME, MDSYOLO_NAME, DFYOLO_NAME+"bs"+MDSYOLO_NAME, DFYOLO_NAME+MDSYOLO_NAME]:
             name = DFYOLO_NAME
             warnings.warn("Detector model "+name+" not found. Using "+DFYOLO_NAME+" instead.")
         if name == DFYOLO_NAME:
@@ -167,9 +123,6 @@ class Detector:
         if name == DFYOLO_NAME+MDSYOLO_NAME: # ensemble method
             self.yolo = YOLOEnsemble(DFYOLO_WEIGHTS, MDSYOLO_WEIGHTS, imgszA=DFYOLO_WIDTH, imgszB=MDSYOLO_WIDTH,
                                      thresA=DFYOLO_THRES, thresB=MDSYOLO_THRES, backstop=False)
-        if name == MDRYOLO_NAME:
-            self.yolo = MDRedwood(MDRYOLO_WEIGHTS, MDRYOLO_WIDTH, MDRYOLO_THRES, device=device)
-
     def bestBoxDetection(self, filename_or_imagecv):
         try:
             results = self.yolo(filename_or_imagecv, device=self.device)
@@ -224,7 +177,7 @@ class Detector:
 ####################################################################################
 ### BEST BOX DETECTION WITH JSON
 ####################################################################################
-from load_api_results import load_api_results
+from .load_api_results import load_api_results
 import json
 import contextlib
 import os

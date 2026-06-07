@@ -1,4 +1,3 @@
-import subprocess
 import os
 import sys
 import logging
@@ -6,7 +5,7 @@ from pathlib import Path
 from geopy.geocoders import Nominatim
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-from utils.exiftool_interface import EXIFTOOL_PATH
+from utils.exiftool_interface import run_exiftool
 
 geolocator = Nominatim(user_agent="my_app")
 
@@ -70,7 +69,6 @@ def addGPSToVideos(filenames, lat, lon, address=None):
 			lat = floor(lat * 1e5) / 1e5
 			lon = floor(lon * 1e5) / 1e5
 			cmd = [
-				EXIFTOOL_PATH,
 				f'-UserData:GPSCoordinates="{lat}, {lon}"',
 				f'-Keys:GPSCoordinates="{lat}, {lon}"',
 			]
@@ -91,7 +89,7 @@ def addGPSToVideos(filenames, lat, lon, address=None):
 				cmd.append(f'-Country={country}')
 				cmd.append(f'-LocationShownCountry={country}')
 			cmd.extend(['-overwrite_original', file])
-			result = subprocess.run(cmd, capture_output=True, text=True)
+			result = run_exiftool(cmd)
 			if result.returncode == 0:
 				logging.info(f"Added GPS ({lat}, {lon}) to {file}")
 			else:
@@ -101,8 +99,9 @@ def addGPSToVideos(filenames, lat, lon, address=None):
 			break
 
 def read_gps(video_path):
-    cmd = [EXIFTOOL_PATH, "-GPSLatitude", "-GPSLongitude", "-n", "-s", "-s", "-s", video_path]
-    result = subprocess.run(cmd, capture_output=True, text=True)
+    result = run_exiftool(
+        ["-GPSLatitude", "-GPSLongitude", "-n", "-s", "-s", "-s", video_path]
+    )
 
     lines = result.stdout.strip().split("\n")
     if len(lines) >= 2:
@@ -164,4 +163,3 @@ def extract_gps_from_file(filename):
 	if lat is None or lon is None:
 		return (None, None)
 	return (lat, lon)
-	

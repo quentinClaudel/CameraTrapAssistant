@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "models": [
+    {
+      "filename": "deepfaune-vit_large_patch14_dinov2.lvd142m.v3.pt",
+      "size": 1217747309,
+      "sha256": "b1d31940067fe7e7e973b093ad787d5463a7c88ad81a8341859667e61a2e4391"
+    },
+    {
+      "filename": "deepfaune-yolov8s_960.pt",
+      "size": 22590190,
+      "sha256": "3ea39dd18e257d2e9087c8066997639503653f4e2f44bd8aa8c8ffc3940af190"
+    },
+    {
+      "filename": "md_v1000.0.0-sorrel-960-2025.06.06.pt",
+      "size": 19171415,
+      "sha256": "f29b0700d47dd8e211df9d58d0db5ede74df735a38080073d5de49c46316b453"
+    }
+  ]
+}

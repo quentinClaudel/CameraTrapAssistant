@@ -15,3 +15,5 @@ openmeteo-requests>=1.0.0
 requests-cache>=0.9.0
 retry-requests>=1.0.0
 dill>=0.3.0
+timm>=1.0.0
+tkintermapview>=1.29

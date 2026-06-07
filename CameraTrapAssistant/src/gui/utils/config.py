@@ -8,11 +8,20 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from config.options_config import OptionsConfig
 
+
 def get_config_file_path():
     """
     Returns the path to the GUI config file.
     """
-    return os.path.join(os.path.dirname(__file__), '..', 'deepfaune_gui.ini')
+    if sys.platform == "win32":
+        base_dir = Path(os.environ.get("APPDATA", Path.home()))
+    else:
+        base_dir = Path(
+            os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")
+        )
+    config_dir = base_dir / "CameraTrapAssistant"
+    config_dir.mkdir(parents=True, exist_ok=True)
+    return str(config_dir / "settings.ini")
 
 def load_checkbox_state():
     """

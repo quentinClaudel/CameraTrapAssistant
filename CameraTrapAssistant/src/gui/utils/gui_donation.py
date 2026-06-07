@@ -1,7 +1,7 @@
 import tkinter as tk
 import webbrowser
-from pathlib import Path
 from PIL import Image, ImageTk
+from utils.resource_manager import get_icon_path
 
 LINK_NORMAL = "#1a73e8"
 LINK_HOVER = "#0b5ed7"
@@ -12,8 +12,7 @@ def load_icon_high_quality(filename: str, target_height: int = 18) -> tk.PhotoIm
     Returns a Tk PhotoImage or None on failure.
     """
     try:
-        icons_dir = Path(__file__).resolve().parent.parent / "icons"
-        img = Image.open(str(icons_dir / filename)).convert("RGBA")
+        img = Image.open(get_icon_path(filename)).convert("RGBA")
         w, h = img.size
         if h > 0 and h != target_height:
             new_w = max(1, round(w * (target_height / h)))

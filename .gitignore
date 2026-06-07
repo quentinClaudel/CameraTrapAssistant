@@ -6,4 +6,7 @@ deepfauneGUI.spec
 deepfaune_gui.ini
 commands/.cache.sqlite
 installer/
-scripts/installer_files_utils/
+.venv/
+.build-venv/
+build/
+packaging/windows/artifacts/

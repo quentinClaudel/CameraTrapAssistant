@@ -45,9 +45,9 @@ from pathlib import Path
 current_dir = Path(__file__).parent
 sys.path.insert(0, str(current_dir))
 
-from detectTools import Detector, DetectorJSON, DFYOLO_NAME
-from classifTools import txt_animalclasses, CROP_SIZE, Classifier
-from fileManager import FileManager
+from .detectTools import Detector, DetectorJSON, DFYOLO_NAME
+from .classifTools import txt_animalclasses, CROP_SIZE, Classifier
+from .fileManager import FileManager
 
 txt_classes = {'fr': txt_animalclasses['fr']+["humain","vehicule"],
                'en': txt_animalclasses['en']+["human","vehicle"],

@@ -1,95 +1,106 @@
-# CameraTrap Assistant - Wildlife Detection System
+# Camera Trap Assistant
 
-A comprehensive wildlife detection and classification system for camera trap images.
+Camera Trap Assistant is a non-commercial, open-source desktop application for
+detecting and classifying wildlife in camera-trap images and videos.
 
-Camera Trap Assistant is an independent, non-commercial open-source project
-built with models and selected source code from
+It uses AI models and selected source code from
 [DeepFaune](https://deepfaune.pages.math.cnrs.fr/software/), a CNRS project.
-It is not affiliated with or endorsed by CNRS or the DeepFaune authors.
+Camera Trap Assistant is independent and is not affiliated with or endorsed by
+CNRS or the DeepFaune authors.
 
-## Quick Start
+## Install on Windows
 
-**Windows Users**: 
-1. First time: Run `scripts\updater.bat` to download the latest version
-2. Then run: `CameraTrapAssistant_windows_launcher.bat` for automatic setup and launch
-3. Subsequent runs: Just use `CameraTrapAssistant_windows_launcher.bat`
+Download `CameraTrapAssistant-<version>-Windows-x64-Setup.exe` and
+`SHA256SUMS.txt` from the
+[GitHub Releases page](https://github.com/noebernigaud/CameraTrapAssistant/releases).
+Verify the checksum, run the installer, then launch the application from the
+Start menu.
 
-**Manual Update**: Run `scripts\updater.bat` anytime to check for and install updates
+The installer includes an isolated runtime, verified AI models, and ExifTool.
+Users do not need Python, Git, or Git LFS. Automatic application replacement
+is intentionally disabled for v1.
 
-## Project Structure
+## Repository Architecture
 
+```text
+CameraTrapAssistant/
+  src/
+    core/                 Feature and domain logic
+    gui/                  Windows, widgets, and GUI helpers
+    models/               DeepFaune integration, manifest, and model weights
+    utils/                Shared infrastructure and external-service adapters
+    config/               Runtime configuration code
+    main.py               Application entry point
+  resources/
+    icons/                User-interface images
+    config/               Packaged default configuration
+    third_party/          Bundled runtime files, grouped by platform
+  requirements.txt        Runtime Python dependencies
+  version.json            Release metadata
+dev/                      Source-checkout helpers for contributors
+packaging/windows/        Windows build and installer definitions
+tests/                    Automated tests
+run-source.bat            Convenient Windows source launcher
+LICENSE                   Project source license
+THIRD_PARTY_NOTICES.md    External code, models, services, and assets
+CITATION.cff              Citation metadata
 ```
-software/
-├── CameraTrapAssistant_windows_launcher.bat # 🆕 Main Windows launcher
-├── scripts/                                 # 🆕 Modular scripts
-│   ├── installer.bat                       # Python & dependencies installer
-│   ├── launcher.bat                        # Application launcher
-│   ├── updater.bat                         # GitHub update checker
-│   └── installer_files_utils/              # Installer-generated files
-│       ├── .installed                      # Installation marker
-│       └── CameraTrapAssistant_installer.log # Installation log
-└── CameraTrapAssistant/                     # Main application
-    ├── src/                                 # Main source code
-    │   ├── main.py                         # Application entry point
-    │   ├── core/                           # Core business logic
-    │   ├── gui/                            # GUI components
-    │   ├── models/                         # AI models and weights
-    │   ├── utils/                          # Utility modules
-    │   └── config/                         # Configuration management
-    ├── resources/                          # Static resources
-    │   ├── icons/                          # Application icons
-    │   ├── tools/                          # External tools (exiftool)
-    │   └── config/                         # Configuration files
-    ├── requirements.txt                    # Python dependencies
-    └── version.json                        # Version information
-```
 
-## Installation & Usage
+The boundaries are intentional: application behavior belongs under
+`CameraTrapAssistant`, contributor conveniences belong under `dev`, and
+generated release work belongs under `packaging`.
 
-### Windows (Recommended)
-1. **First time**: Run `scripts\updater.bat` to download the application
-2. **Launch**: Run `CameraTrapAssistant_windows_launcher.bat` for automatic setup and launch
-3. **Updates**: Run `scripts\updater.bat` anytime to check for updates
+Platform-specific distribution work should follow the same shape:
+`packaging/<platform>` for build definitions and
+`resources/third_party/<platform>` for bundled native components. This gives a
+macOS packager a clear place to add its installer and native dependencies.
 
-### Manual Installation
-```bash
+## Run from Source
+
+Source development requires Windows, Python 3.10 or newer, and Git LFS. The
+setup creates a repository-local `.venv`; it does not modify the user's global
+Python environment.
+
+```bat
+git lfs install
 git clone https://github.com/noebernigaud/CameraTrapAssistant.git
-cd CameraTrapAssistant/software/CameraTrapAssistant
-pip install -r requirements.txt
-python src/main.py
+cd CameraTrapAssistant
+git lfs pull
+dev\setup.bat
+dev\run.bat
 ```
 
-## Auto-Update System
+Alternatively, run `run-source.bat` to set up the environment when needed and
+launch the application. Model sizes and SHA-256 hashes are validated before
+the AI libraries load. See [`dev/README.md`](dev/README.md) for helper
+responsibilities.
 
-The modular script system provides:
-- **`scripts\updater.bat`**: Checks GitHub releases and downloads updates
-- **`scripts\installer.bat`**: Installs Python, pip, and dependencies
-- **`scripts\launcher.bat`**: Launches the application
-- **Main launcher**: Orchestrates the process automatically
+## Build a Windows Release
 
-### Script Details
+Release builds use PyInstaller in one-directory mode and Inno Setup 6:
 
-- **Updater**: Downloads from GitHub, backs up current version, installs updates
-- **Installer**: Handles Python installation and dependency management  
-- **Launcher**: Simple application launcher with version display
-- **Main Launcher**: Checks installation status and runs appropriate scripts
-
-## Version Management
-
-Update version in `CameraTrapAssistant/version.json`:
-```json
-{
-    "version": "1.0.1",
-    "build_date": "2025-10-18",
-    "min_python_version": "3.8",
-    "description": "CameraTrap Assistant - Wildlife camera trap image analysis tool",
-    "github_repo": "noebernigaud/CameraTrapAssistant"
-}
+```powershell
+.\packaging\windows\build.ps1
 ```
 
-Create GitHub release with tag `v1.0.1` - the installer will detect it automatically.
+The build runs tests, validates models, packages and smoke-tests the
+application, creates the installer, and writes its checksum under
+`packaging/windows/artifacts`. See the
+[Windows packaging guide](packaging/windows/README.md) for prerequisites and
+the release checklist.
 
-## License
+## Versioning
+
+Before a release, set the same version in:
+
+- `CameraTrapAssistant/version.json`
+- `CameraTrapAssistant/src/__init__.py`
+- `packaging/windows/CameraTrapAssistant.iss`
+
+Then run the complete build, test the installer on a clean Windows machine,
+and publish the installer with `SHA256SUMS.txt` in a matching GitHub Release.
+
+## License and Attribution
 
 Project-original source code is copyright (c) 2025-2026 Noe Bernigaud and is
 distributed under the [CeCILL v2.1 license](LICENSE). Adapted DeepFaune source
@@ -97,13 +108,10 @@ files retain their CNRS copyright and CeCILL notices.
 
 The bundled DeepFaune model weights are licensed separately under
 [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Other models,
-dependencies, tools, services, and brand assets have their own terms. See
-[Third-Party Notices](THIRD_PARTY_NOTICES.md) before redistributing the
-application.
+dependencies, bundled software, services, and brand assets have their own
+terms. Review [Third-Party Notices](THIRD_PARTY_NOTICES.md) before
+redistributing the application.
 
-## Citation and acknowledgement
-
-Citation metadata for this project is provided in [`CITATION.cff`](CITATION.cff).
-Research and publications using the bundled AI models should also acknowledge
-and cite DeepFaune according to its
-[official documentation](https://deepfaune.pages.math.cnrs.fr/software/).
+Citation metadata is provided in [`CITATION.cff`](CITATION.cff). Research and
+publications using the AI models should also acknowledge and cite DeepFaune
+according to its official documentation.
