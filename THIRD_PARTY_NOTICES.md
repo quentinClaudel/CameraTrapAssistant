@@ -54,6 +54,16 @@ The package's notices and license bundle are preserved under:
 - `CameraTrapAssistant/resources/third_party/windows/exiftool/exiftool_files/LICENSE`
 - `CameraTrapAssistant/resources/third_party/windows/exiftool/exiftool_files/Licenses_Strawberry_Perl.zip`
 
+The macOS distribution includes ExifTool 13.36 by Phil Harvey as the ExifTool
+Unix distribution, which is pure Perl. It is run with the Perl interpreter
+supplied by macOS, so no Perl runtime is redistributed. ExifTool is available
+under the same terms as Perl (Artistic License or GNU GPL).
+
+The package's notices and license are preserved under:
+
+- `CameraTrapAssistant/resources/third_party/macos/exiftool/LICENSE`
+- `CameraTrapAssistant/resources/third_party/macos/exiftool/README.txt`
+
 ExifTool project: https://exiftool.org/
 
 ## Python dependencies

@@ -49,6 +49,15 @@ class ResourceManagerTests(unittest.TestCase):
                     / "exiftool.exe",
                 )
                 self.assertEqual(
+                    get_third_party_path("macos/exiftool/exiftool"),
+                    bundle_root
+                    / "resources"
+                    / "third_party"
+                    / "macos"
+                    / "exiftool"
+                    / "exiftool",
+                )
+                self.assertEqual(
                     get_model_path("model.pt"),
                     bundle_root / "models" / "weights" / "model.pt",
                 )

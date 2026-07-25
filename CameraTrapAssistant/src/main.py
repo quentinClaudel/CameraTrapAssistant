@@ -34,8 +34,8 @@ def main():
             from gui.utils.config import load_checkbox_state
             from models.classifTools import Classifier
             from models.detectTools import Detector, DFYOLO_NAME, MDSYOLO_NAME
-            from utils.exiftool_interface import run_exiftool
-            from utils.resource_manager import get_icon_path, get_third_party_path
+            from utils.exiftool_interface import exiftool_is_available, run_exiftool
+            from utils.resource_manager import get_icon_path
 
             load_checkbox_state()
             for icon_name in (
@@ -46,10 +46,8 @@ def main():
             ):
                 with Image.open(get_icon_path(icon_name)) as icon:
                     icon.verify()
-            if not get_third_party_path(
-                "windows/exiftool/exiftool.exe"
-            ).is_file():
-                raise FileNotFoundError("Bundled ExifTool executable was not found")
+            if not exiftool_is_available():
+                raise FileNotFoundError("Bundled ExifTool was not found")
             exiftool_version = run_exiftool(["-ver"])
             if exiftool_version.returncode != 0 or not exiftool_version.stdout.strip():
                 raise RuntimeError(
