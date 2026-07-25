@@ -6,15 +6,21 @@ class TkinterLogHandler(logging.Handler):
 
     BOTTOM_TOLERANCE = 0.001
 
-    def __init__(self, log_widget, on_unread_change=None):
+    def __init__(self, log_widget, on_unread_change=None, post_to_main_loop=None):
         super().__init__()
         self.log_widget = log_widget
         self.on_unread_change = on_unread_change
+        # Analysis runs on a worker thread, so records arrive off the main
+        # loop and must be handed to it rather than written directly. See
+        # gui.utils.main_loop for why after() is not enough on its own.
+        self.post_to_main_loop = post_to_main_loop or (
+            lambda callback, *arguments: log_widget.after(0, callback, *arguments)
+        )
         self.has_unread_logs = False
 
     def emit(self, record):
         msg = self.format(record)
-        self.log_widget.after(0, self._append, msg)
+        self.post_to_main_loop(self._append, msg)
 
     def _append(self, msg):
         should_follow = self._is_at_bottom()

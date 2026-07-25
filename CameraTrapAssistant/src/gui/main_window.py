@@ -16,21 +16,41 @@ from gui.utils.donation import show_support_nudge, create_support_link_label
 from config.options_config import OptionsConfig
 from core.run import runWithArgs
 from gui.utils.logging import TkinterLogHandler
+from gui.utils.main_loop import MainLoopDispatcher
 from gui.utils.config import load_checkbox_state, save_checkbox_state, increment_run_count
 from gui.utils.tooltip import CheckWithTooltip, LabelWithTooltip
 from utils.time_utils.timeOffsetToTimezone import convert_to_timezone, time_offset_to_timezone
 
 
 
+def on_main_thread(callback, *arguments):
+    """
+    Schedule a callback on the Tk main loop.
+
+    Widgets and dialogs may only be touched from the thread running the main
+    loop. On macOS a message box is a real AppKit alert, and AppKit terminates
+    the process when a window is created on any other thread. Calling after()
+    from the worker thread is not a fix on its own; see gui.utils.main_loop.
+    """
+    main_loop_dispatcher.post(callback, *arguments)
+
+
 def run_in_thread(folder, options_config, lat, lon, csv_path=None):
     """
     Run the main processing in a background thread.
+
+    Everything here runs off the main thread, so no Tk call may be made
+    directly. Use on_main_thread for anything that touches the interface.
     """
     try:
         runWithArgs(folder, options_config, lat, lon, csv_path)
-        messagebox.showinfo("Success", "Execution successful.")
+        on_main_thread(messagebox.showinfo, "Success", "Execution successful.")
     except Exception as e:
-        messagebox.showerror("Error", f"Execution failure : {e}")
+        on_main_thread(messagebox.showerror, "Error", f"Execution failure : {e}")
+    finally:
+        # The button is disabled for the duration of a run, so it has to be
+        # restored however the run ended.
+        on_main_thread(lambda: run_btn.config(state=tk.NORMAL))
 
 
 def select_folder():
@@ -107,13 +127,18 @@ def main():
     Main entry point for the DeepFaune GUI.
     Sets up the window, widgets, and logging.
     """
-    global root, folder, label, log_text, log_handler
+    global root, folder, label, log_text, log_handler, main_loop_dispatcher
     global data_var, stats_var, move_empty_var, move_undefined_var, rename_var, get_gps_each_var, use_gps_only_for_data_var, threshold_var, combine_with_data_var, time_offset_var
     global gps_var, coord_var
     root = tk.Tk()
     root.title("Camera Trap Assistant")
     root.minsize(240, 120)
     root.geometry("1000x600")
+
+    # Every interface update produced by the analysis thread travels through
+    # this dispatcher. Started here, on the thread that owns the main loop.
+    main_loop_dispatcher = MainLoopDispatcher(root)
+    main_loop_dispatcher.start()
 
     # Folder selection and launch row
     folder_frame = tk.Frame(root)
@@ -378,6 +403,7 @@ def main():
     log_handler = TkinterLogHandler(
         log_text,
         on_unread_change=set_new_logs_visible,
+        post_to_main_loop=main_loop_dispatcher.post,
     )
     new_logs_button.config(command=log_handler.scroll_to_bottom)
 
