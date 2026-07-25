@@ -6,7 +6,9 @@ installable release.
 
 This guide is for release maintainers. For everyday development, use the
 [developer and contributor guide](../../dev/README.md). For installation as an
-end user, see [Install and Use](../../README.md#install-and-use).
+end user, see [Install and Use](../../README.md#install-and-use). The macOS
+release has its own pipeline in
+[`packaging/macos`](../macos/README.md).
 
 ## Files
 

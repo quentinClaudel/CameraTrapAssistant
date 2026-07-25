@@ -54,9 +54,13 @@ PYTHONPATH=tests ./.venv/bin/python -m unittest test_geocoding.GeocodingTests -v
   integration.
 - Keep tests independent of personal files, credentials, network availability,
   and machine-specific paths.
+- The suite must pass on every platform that has a packaging pipeline. When a
+  behavior can only exist on one platform, such as hiding the ExifTool console
+  window on Windows, guard the test with `unittest.skipUnless` on
+  `sys.platform` rather than letting it fail elsewhere.
 
 ## Release Verification
 
-`packaging/windows/build.ps1` runs the complete suite before model validation,
-PyInstaller packaging, and the packaged-application smoke test. A release build
-stops immediately if any test fails.
+`packaging/windows/build.ps1` and `packaging/macos/build.sh` run the complete
+suite before model validation, packaging, and the packaged-application smoke
+test. A release build stops immediately if any test fails.

@@ -7,6 +7,8 @@ installer is not required for normal development.
 - Working on tests? See the [test guide](../tests/README.md).
 - Preparing a Windows release? See the
   [Windows packaging guide](../packaging/windows/README.md).
+- Preparing a macOS release? See the
+  [macOS packaging guide](../packaging/macos/README.md).
 
 ## Development Setup
 
@@ -69,9 +71,15 @@ After initial setup, this is the only command needed for most development
 checks. The application validates the model manifest at startup. If it reports
 Git LFS pointer files, run `git lfs pull` again.
 
-The repository currently bundles only the Windows ExifTool executable. The GUI
-can be launched on macOS and Linux, but GPS metadata operations require a
-platform-specific ExifTool integration.
+The repository bundles ExifTool for Windows and macOS. On macOS the bundled
+copy is the ExifTool Unix distribution, which runs on the Perl interpreter that
+macOS provides at `/usr/bin/perl`. On Linux the application falls back to an
+ExifTool found on `PATH`, so GPS metadata operations there need
+`apt install libimage-exiftool-perl` or the equivalent.
+
+Running the GUI from source needs a Python built with tkinter. Homebrew's
+`python@3.x` does not include it unless `python-tk@3.x` is also installed; the
+python.org installer and `uv python install` both include it.
 
 ## Run Tests
 
@@ -111,6 +119,7 @@ CameraTrapAssistant/
   version.json            Release metadata
 dev/                      Source-checkout helpers and this guide
 packaging/windows/        Windows build and installer definitions
+packaging/macos/          macOS build, bundle, and disk image definitions
 tests/                    Automated tests
 run-source.bat            Optional Windows source launcher
 LICENSE                   Project source license
@@ -179,7 +188,13 @@ Do not use GitHub's generated source ZIP as an installable application: Git
 LFS model content is not guaranteed to be present. Public packages must be
 built and validated through a platform packaging pipeline.
 
-The current Windows pipeline runs tests, validates model checksums, packages
-the application, smoke-tests it, creates an installer, and writes release
-checksums. Follow the [Windows packaging guide](../packaging/windows/README.md)
-for its prerequisites and checklist.
+Each platform pipeline runs tests, validates model checksums, packages the
+application, smoke-tests it, produces the platform's installable artifact, and
+writes release checksums. Follow the packaging guide of the platform you are
+releasing for:
+
+- [Windows packaging guide](../packaging/windows/README.md), which produces an
+  Inno Setup installer.
+- [macOS packaging guide](../packaging/macos/README.md), which produces a
+  signed, notarizable application bundle inside a disk image. A macOS release
+  must be built on macOS, and on the same processor architecture it targets.

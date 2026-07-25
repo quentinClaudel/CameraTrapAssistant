@@ -18,6 +18,7 @@ You want to analyze camera-trap media without installing Python or developer
 tools.
 
 - [Install the Windows application](#install-on-windows)
+- [Install the macOS application](#install-on-macos)
 - [Run your first analysis](#run-your-first-analysis)
 - [Understand files and results](#files-and-results)
 - [Get help](#get-help)
@@ -33,13 +34,14 @@ platform, or prepare a release.
 - [Understand the repository](dev/README.md#repository-architecture)
 - [Prepare a pull request](dev/README.md#prepare-a-pull-request)
 - [Build the Windows installer](packaging/windows/README.md)
+- [Build the macOS disk image](packaging/macos/README.md)
 
 ## Install and Use
 
 ### Install on Windows
 
-The supported public package is currently the 64-bit Windows installer.
-macOS and Linux do not yet have supported installers, although the application
+Supported public packages are the 64-bit Windows installer and the macOS disk
+image. Linux does not yet have a supported installer, although the application
 can be run from source for development.
 
 1. Open the
@@ -60,6 +62,41 @@ Get-FileHash .\CameraTrapAssistant-<version>-Windows-x64-Setup.exe -Algorithm SH
 ```
 
 The displayed hash must match the installer entry in `SHA256SUMS.txt`.
+
+### Install on macOS
+
+1. Open the
+   [GitHub Releases page](https://github.com/noebernigaud/CameraTrapAssistant/releases).
+2. Under the release's **Assets**, download
+   `CameraTrapAssistant-<version>-macOS-arm64.dmg` for an Apple silicon Mac, or
+   `CameraTrapAssistant-<version>-macOS-x86_64.dmg` for an Intel Mac. The Apple
+   menu, then **About This Mac**, shows which one you have.
+3. Open the downloaded disk image.
+4. Drag **Camera Trap Assistant** onto the **Applications** folder shown next
+   to it.
+5. Eject the disk image and open **Camera Trap Assistant** from Launchpad or
+   the Applications folder.
+
+The disk image includes Python, the AI models, and ExifTool. You do not need to
+install Python, Git, or Git LFS.
+
+The first time you select a folder on your Desktop, in Documents, in Downloads,
+or on a memory card, macOS asks whether the application may read it. Analysis
+cannot start until you allow it. You can change these permissions later in
+**System Settings**, then **Privacy & Security**, then **Files and Folders**.
+
+The disk image is signed and notarized by Apple. If macOS reports that the
+application cannot be opened because the developer cannot be verified, the file
+did not come from the official Releases page; delete it and download it again.
+
+Each release also provides `SHA256SUMS.txt` for users who want to verify the
+download:
+
+```bash
+shasum -a 256 ~/Downloads/CameraTrapAssistant-<version>-macOS-arm64.dmg
+```
+
+The displayed hash must match the disk image entry in `SHA256SUMS.txt`.
 
 ### Run Your First Analysis
 
@@ -113,8 +150,8 @@ If the application reports an error:
 2. Retry with a small copied folder and options that do not modify files.
 3. Check the
    [open issues](https://github.com/noebernigaud/CameraTrapAssistant/issues).
-4. If the problem is new, create an issue with the application version,
-   Windows version, steps to reproduce, and relevant log messages.
+4. If the problem is new, create an issue with the application version, your
+   Windows or macOS version, steps to reproduce, and relevant log messages.
 
 ## Develop and Contribute
 
@@ -128,6 +165,7 @@ Useful references:
 - [Developer and contributor guide](dev/README.md)
 - [Test guide](tests/README.md)
 - [Windows packaging guide](packaging/windows/README.md)
+- [macOS packaging guide](packaging/macos/README.md)
 - [Third-party notices](THIRD_PARTY_NOTICES.md)
 - [Issue tracker](https://github.com/noebernigaud/CameraTrapAssistant/issues)
 
