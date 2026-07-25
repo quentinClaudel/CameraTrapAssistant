@@ -15,6 +15,8 @@ def get_config_file_path():
     """
     if sys.platform == "win32":
         base_dir = Path(os.environ.get("APPDATA", Path.home()))
+    elif sys.platform == "darwin":
+        base_dir = Path.home() / "Library" / "Application Support"
     else:
         base_dir = Path(
             os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")
