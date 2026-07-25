@@ -9,12 +9,15 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 
 def _show_startup_error(message: str) -> None:
+    # Always report on the error stream first. A packaged application that only
+    # opens a dialog gives a release build no way to say what went wrong.
+    print(message, file=sys.stderr)
     try:
         from tkinter import messagebox
 
         messagebox.showerror("Camera Trap Assistant", message)
     except Exception:
-        print(message, file=sys.stderr)
+        pass
 
 
 def main():
@@ -59,6 +62,11 @@ def main():
             return 0
         gui_main()
     except ImportError as e:
+        if "--smoke-test" in sys.argv:
+            # A failing release build needs the full import chain, not a summary.
+            import traceback
+
+            traceback.print_exc()
         _show_startup_error(
             f"Could not load an application dependency:\n\n{e}\n\n"
             "Install the application again from the official release."
