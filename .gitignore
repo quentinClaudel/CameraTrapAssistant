@@ -10,3 +10,5 @@ installer/
 .build-venv/
 build/
 packaging/windows/artifacts/
+.build-venv-macos/
+packaging/macos/artifacts/

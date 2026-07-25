@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Hardened runtime entitlements for the Camera Trap Assistant bundle.
+
+  Apple requires the hardened runtime for notarization. A frozen Python
+  application needs a small set of exceptions to it:
+
+  - disable-library-validation lets the interpreter load the many extension
+    modules that ship inside the bundle. Without it the application stops at
+    the first import of a compiled dependency.
+  - allow-jit and allow-unsigned-executable-memory cover the code that PyTorch
+    generates at run time.
+  - allow-dyld-environment-variables lets the bundled loader set the search
+    paths that PyInstaller relies on.
+  - The network client entitlement covers the weather service, the geocoding
+    service, and the map tiles.
+
+  The application is not sandboxed, so the file access entitlements only
+  document intent; access is still governed by the system privacy prompts
+  described in Info.plist.
+-->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>com.apple.security.cs.disable-library-validation</key>
+    <true/>
+    <key>com.apple.security.cs.allow-jit</key>
+    <true/>
+    <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+    <true/>
+    <key>com.apple.security.cs.allow-dyld-environment-variables</key>
+    <true/>
+    <key>com.apple.security.network.client</key>
+    <true/>
+    <key>com.apple.security.files.user-selected.read-write</key>
+    <true/>
+</dict>
+</plist>
