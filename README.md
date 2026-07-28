@@ -68,9 +68,7 @@ The displayed hash must match the installer entry in `SHA256SUMS.txt`.
 1. Open the
    [GitHub Releases page](https://github.com/noebernigaud/CameraTrapAssistant/releases).
 2. Under the release's **Assets**, download
-   `CameraTrapAssistant-<version>-macOS-arm64.dmg` for an Apple silicon Mac, or
-   `CameraTrapAssistant-<version>-macOS-x86_64.dmg` for an Intel Mac. The Apple
-   menu, then **About This Mac**, shows which one you have.
+   `CameraTrapAssistant-<version>-macOS-arm64.dmg` for an Apple silicon Mac.
 3. Open the downloaded disk image.
 4. Drag **Camera Trap Assistant** onto the **Applications** folder shown next
    to it.

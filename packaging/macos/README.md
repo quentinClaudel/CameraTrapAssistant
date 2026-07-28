@@ -31,7 +31,7 @@ end user, see [Install and Use](../../README.md#install-and-use).
 
 ## Prerequisites
 
-- macOS 12 or newer on Apple silicon or Intel
+- macOS 12 or newer on Apple silicon
 - Xcode command line tools (`xcode-select --install`)
 - Python 3.10 or newer **with tkinter**, from a portable interpreter
 - Git LFS with all model objects present
@@ -95,8 +95,7 @@ widget from a worker thread; `tests/test_main_loop.py` and
 Re-test a full analysis whenever the build interpreter changes. Both failures
 appear only at run time, on macOS, and one of them is silent.
 
-The build is native architecture only, because the PyTorch wheels are. Build on
-Apple silicon for an `arm64` release and on Intel for an `x86_64` release.
+The build is native architecture only, because the PyTorch wheels are.
 
 ## Build
 
