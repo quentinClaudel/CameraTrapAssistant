@@ -44,13 +44,21 @@ class ExifToolInterfaceTests(unittest.TestCase):
 
 
 class ExifToolCommandTests(unittest.TestCase):
+    """Path resolution is pure computation, so every platform is checked here.
+
+    The expected location is compared as path components rather than as a
+    string suffix: these paths come from pathlib, so they use whichever
+    separator the host uses, not the one of the platform being resolved for.
+    """
+
     def test_windows_command_uses_bundled_executable(self):
         with patch.object(exiftool_interface.sys, "platform", "win32"):
             command = exiftool_interface.get_exiftool_command()
 
         self.assertEqual(len(command), 1)
-        self.assertTrue(command[0].endswith("windows\\exiftool\\exiftool.exe")
-                        or command[0].endswith("windows/exiftool/exiftool.exe"))
+        self.assertEqual(
+            Path(command[0]).parts[-3:], ("windows", "exiftool", "exiftool.exe")
+        )
 
     def test_macos_command_runs_bundled_script_through_perl(self):
         with patch.object(exiftool_interface.sys, "platform", "darwin"):
@@ -60,7 +68,9 @@ class ExifToolCommandTests(unittest.TestCase):
                 command = exiftool_interface.get_exiftool_command()
 
         self.assertEqual(command[0], "/usr/bin/perl")
-        self.assertTrue(command[1].endswith("macos/exiftool/exiftool"))
+        self.assertEqual(
+            Path(command[1]).parts[-3:], ("macos", "exiftool", "exiftool")
+        )
 
     def test_other_platforms_use_exiftool_from_path(self):
         with patch.object(exiftool_interface.sys, "platform", "linux"):
